@@ -8,18 +8,18 @@ var Promise = require('../').Promise;
 var Collection = require('../').Collection;
 
 var blessed = require('../lib/blessed');
-function SubCollection(input) {
-  if (!(this instanceof SubCollection)) {
-    return new SubCollection(input);
+function SubCollection(resolver) {
+  if (typeof resolver !== 'function') {
+    throw new TypeError();
   }
 
-  blessed.be(this, function(resolve, reject) {
-    if (typeof input === 'function') {
-      input(resolve, reject);
-    } else {
-      resolve(input);
-    }
-  }, true);
+  if (!(this instanceof SubCollection)) {
+    return new SubCollection(resolver);
+  }
+
+  if (resolver !== blessed.be) {
+    blessed.be(this, resolver, true);
+  }
 }
 blessed.extended(SubCollection, Collection);
 
